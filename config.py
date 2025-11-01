@@ -9,7 +9,7 @@ def config(app):
     '''
     Limit on number of solves for challenge to trigger webhook for. Set to 0 to send a message for every solve.
     '''
-    app.config['DISCORD_WEBHOOK_LIMIT'] = environ.get('DISCORD_WEBHOOK_LIMIT', '3')
+    app.config['DISCORD_WEBHOOK_LIMIT'] = environ.get('DISCORD_WEBHOOK_LIMIT', '1')
 
     '''
     Webhook flag submission format string. Valid vars: team, user, solves, fsolves (formatted solves), challenge, category, team_id, user_id, challenge_slug, value
@@ -19,7 +19,7 @@ def config(app):
     '''
     Post webhook message when challenge is changed (published, hidden or updated)
     '''
-    app.config['DISCORD_WEBHOOK_CHALL'] = environ.get('DISCORD_WEBHOOK_CHALL', True)
+    app.config['DISCORD_WEBHOOK_CHALL'] = environ.get('DISCORD_WEBHOOK_CHALL', False)
 
     '''
     Post webhook message when challenge is updated (otherwise only published or hidden)
