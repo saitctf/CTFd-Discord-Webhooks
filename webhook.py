@@ -45,8 +45,10 @@ def load(app):
                         solvers = solvers.filter(Solves.user.has(hidden=False))
                     num_solves = solvers.count()
 
-                    limit = app.config["DISCORD_WEBHOOK_LIMIT"]
-                    if int(limit) > 0 and num_solves > int(limit):
+                    limit = int(app.config["DISCORD_WEBHOOK_LIMIT"])
+                    # Only send webhook if limit is 0 (send all) or if this is within the limit
+                    # For limit=1, only send when num_solves == 1 (first solve only)
+                    if limit > 0 and num_solves > limit:
                         return result
                     webhook = DiscordWebhook(url=app.config['DISCORD_WEBHOOK_URL'])
 
@@ -115,10 +117,12 @@ def load(app):
                         action = "updated"
 
                     # Make sure the challenge is visible, action is hidden, or override is configured
-                    if not (data.get("data").get("state") == "visible" or action == "hidden" or app.config['DISCORD_WEBHOOK_CHALL_UNPUBLISHED']):
+                    chall_unpublished = app.config['DISCORD_WEBHOOK_CHALL_UNPUBLISHED']
+                    if not (data.get("data").get("state") == "visible" or action == "hidden" or chall_unpublished):
                         return result
 
-                    if action == "updated" and not app.config['DISCORD_WEBHOOK_CHALL_UPDATE']:
+                    chall_update = app.config['DISCORD_WEBHOOK_CHALL_UPDATE']
+                    if action == "updated" and not chall_update:
                         return result
 
                     format_args = {
